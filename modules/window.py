@@ -7,6 +7,20 @@ from OpenGL.GL.shaders import compileProgram, compileShader
 
 
 # Window class, creates a window with glfw
+def create_shader(vertex_filepath, fragment_filepath):
+    with open(vertex_filepath, 'r') as vf:
+        vertex_src = vf.readlines()
+
+    with open(fragment_filepath, 'r') as ff:
+        fragment_src = ff.readlines()
+
+    # Links the vertex and fragment shaders together
+    local_shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER),
+                                  compileShader(fragment_src, GL_FRAGMENT_SHADER))
+
+    return local_shader
+
+
 class Window:
     # Initializes a window
     def __init__(self, width: int, height: int, title: str):
@@ -50,16 +64,3 @@ class Window:
 
         # Terminate glfw because we already initialized it
         glfw.terminate()
-
-    def create_shader(self, vertex_filepath, fragment_filepath):
-        with open(vertex_filepath, 'r') as vf:
-            vertex_src = vf.readlines()
-
-        with open(fragment_filepath, 'r') as ff:
-            fragment_src = ff.readlines()
-
-        # Links the vertex and fragment shaders together
-        local_shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER),
-                                      compileShader(fragment_src, GL_FRAGMENT_SHADER))
-
-        return local_shader
