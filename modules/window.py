@@ -14,11 +14,8 @@ def create_shader(vertex_filepath, fragment_filepath):
     with open(fragment_filepath, 'r') as ff:
         fragment_src = ff.readlines()
 
-    # Links the vertex and fragment shaders together
-    local_shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER),
-                                  compileShader(fragment_src, GL_FRAGMENT_SHADER))
-
-    return local_shader
+    # Return the linked vertex and fragment shaders together as one main shader
+    return compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
 
 
 class Window:
