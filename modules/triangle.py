@@ -5,15 +5,18 @@ from OpenGL.GL import *
 
 
 class Triangle:
-    def __init__(self, shader):
+    def __init__(self, shader, material):
         # We need to use the shader program which is being passed in at creation so we get the information
         glUseProgram(shader)
 
-        # x, y, z, r, g, b
+        # Set material as a attribute of the class because each shape should have a texture
+        self.material = material
+
+        # x, y, z, r, g, b, s, t
         self.vertices = (
-            -0.5, 0.5, 0.0, 1.0, 0.0, 0.0,
-            0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
-            0.0, 0.5, 0.0, 0.0, 0.0, 1.0
+            -0.5, -0.5, 0.0,   1.0, 0.0, 0.0,     0.25, 0.75,
+            0.5, -0.5, 0.0,    0.0, 1.0, 0.0,     0.75, 0.75,
+            0.0, 0.5, 0.0,     0.0, 0.0, 1.0,     0.5, 0.25
         )
 
         # The datatype has to be float32, by default its 64 bit which acts a bit weird
@@ -25,7 +28,6 @@ class Triangle:
 
         # Vertex array object; stores all the information about the triangle, so that we can draw it quickly
         self.vao = glGenVertexArrays(1)
-
         glBindVertexArray(self.vao)
 
         # vertex buffer object : stores all the data
@@ -46,16 +48,26 @@ class Triangle:
         #   normalize (already normalized from 0-1)
         #   stride (from one number, how many numbers do we have to step to get to the next number?) * the amount of bytes in a number
         #   pointer (pointer to the first position) [void pointer, points to a pure memory location with no datatype]
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * 4, ctypes.c_void_p(0))
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, self.vertices.itemsize * 8, ctypes.c_void_p(0))
 
-        glEnableVertexAttribArray(1)
-        # Attribute location 1, which is the color
+        # Attribute location 1 (Color)
         # ctypes.c_void_p is 3*4 because we start at index 3 and each number has 4 bytes
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * 4, ctypes.c_void_p(3 * 4))
+        glEnableVertexAttribArray(1)
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, self.vertices.itemsize * 8, ctypes.c_void_p(3 * 4))
 
+        # Attribute location 2 (Texture)
+        glEnableVertexAttribArray(2)
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, self.vertices.itemsize * 8, ctypes.c_void_p(6 * 4))
+
+
+    # Draw function, draws triangle on window
     def draw(self, shader):
         # Use the provided shader
         glUseProgram(shader)
+
+        # Use the material
+        self.material.use()
+
         # Bind the vao, recalls all of the data and the attributes which was loaded before in the init function
         glBindVertexArray(self.vao)
         # Draw function, put it in triangles mode, start at index 0, and we have 3 corners for the triangle

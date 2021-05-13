@@ -3,11 +3,13 @@ import glfw
 
 # Import all OpenGL functions
 from OpenGL.GL import *
+# Import functions from shaders for create_shader function
 from OpenGL.GL.shaders import compileProgram, compileShader
 
 
 # Window class, creates a window with glfw
 def create_shader(vertex_filepath, fragment_filepath):
+    # Open files and read the data inside said files
     with open(vertex_filepath, 'r') as vf:
         vertex_src = vf.readlines()
 
@@ -15,9 +17,10 @@ def create_shader(vertex_filepath, fragment_filepath):
         fragment_src = ff.readlines()
 
     # Return the linked vertex and fragment shaders together as one main shader
-    return compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
+    return compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER),
+                            compileShader(fragment_src, GL_FRAGMENT_SHADER))
 
-
+# Window class, holds functions for the glfw window
 class Window:
     # Initializes a window
     def __init__(self, width: int, height: int, title: str):
@@ -48,15 +51,19 @@ class Window:
             # Makes the window respond to mouse and keyboard inputs
             glfw.poll_events()
 
-            #  sets the bitplane area of the window to values previously selected by glClearColor, glClearDepth, and glClearStencil.
+            # Sets the bitplane area of the window to values previously selected by glClearColor, glClearDepth,
+            # and glClearStencil.
             glClear(GL_COLOR_BUFFER_BIT)
 
+            # Call the triangle draw function
             triangle.draw(shader)
 
             # Makes the back and front buffers swap
             glfw.swap_buffers(self.window)
 
+        # Destroy triangle
         triangle.destroy()
+        # Delete shader
         glDeleteProgram(shader)
 
         # Terminate glfw because we already initialized it

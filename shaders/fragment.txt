@@ -2,10 +2,21 @@
 
 // Takes in the fragment color from the vertex_shader
 in vec3 fragmentColor;
+in vec2 fragmentTexCoord;
 
 // Output the color
 out vec4 color;
 
+// A uniform is a bit of data which is sent through to every object,
+// we have the ability to set uniforms to different things
+uniform sampler2D imageTexture;
+
 void main(){
-    color = vec4(fragmentColor, 1.0);
+   // The texture function takes
+   // The name of the sampler
+   // The texture coord
+   // Returns the pixel color of that bit of the texture
+
+    // We take the pixel color, and then multiply it with the color
+    color = vec4(fragmentColor, 1.0) * texture(imageTexture, fragmentTexCoord);
 }

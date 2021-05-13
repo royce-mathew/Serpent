@@ -3,14 +3,18 @@
 // variables that the program will be taking in
 layout (location=0) in vec3 vertexPos;
 layout (location=1) in vec3 vertexColor;
+layout (location=2) in vec2 vertexTexCoord;
 
 // OpenGl does not have a inbuilt function for outputting fragmentColor so we manually input it
 out vec3 fragmentColor;
+out vec2 fragmentTexCoord;
 
-void main(){
+void main()
+{
     // Inbuilt function for passing through positions
     // Positions are based around 4d vectors with x y z and depth
     gl_Position = vec4(vertexPos, 1.0);
 
     fragmentColor = vertexColor;
+    fragmentTexCoord = vertexTexCoord;
 }
